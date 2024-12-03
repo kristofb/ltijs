@@ -19,11 +19,11 @@
 [![Donate](https://img.shields.io/badge/Donate-Buy%20me%20a%20coffe-blue)](https://www.buymeacoffee.com/UL5fBsi)
 
 
-Please ⭐️ us on [GitHub](https://github.com/Cvmcosta/ltijs), it always helps! 
+Please ⭐️ us on [GitHub](https://github.com/Cvmcosta/ltijs), it always helps!
 
 > [Ltijs is LTI® Advantage Complete Certified by IMS](https://site.imsglobal.org/certifications/coursekey/ltijs)
 
-> Ltijs is the first LTI Library to implement the new [LTI® Advantage Dynamic Registration Service](https://cvmcosta.me/ltijs/#/dynamicregistration), now supported by **Moodle 3.10**. 
+> Ltijs is the first LTI Library to implement the new [LTI® Advantage Dynamic Registration Service](https://cvmcosta.me/ltijs/#/dynamicregistration), now supported by **Moodle 3.10**.
 > The Dynamic Registration Service turns the LTI Tool registration flow into a fast, completely automatic process.
 
 > - [Migrating from version 4](https://cvmcosta.github.io/ltijs/#/migration)
@@ -112,7 +112,7 @@ Through our consultation services we can help you design, build and maintain you
 The Learning Tools Interoperability (LTI®) protocol is a standard for integration of rich learning applications within educational environments. <sup>[ref](https://www.imsglobal.org/spec/lti/v1p3/)</sup>
 
 
-This library implements a tool provider as an [Express](https://expressjs.com/) server, with preconfigured routes and methods that manage the [LTI® 1.3](https://www.imsglobal.org/spec/lti/v1p3/) protocol for you. Making it fast and simple to create a working learning tool with access to every LTI® service, without having to worry about manually implementing any of the security and validation required to do so. 
+This library implements a tool provider as an [Express](https://expressjs.com/) server, with preconfigured routes and methods that manage the [LTI® 1.3](https://www.imsglobal.org/spec/lti/v1p3/) protocol for you. Making it fast and simple to create a working learning tool with access to every LTI® service, without having to worry about manually implementing any of the security and validation required to do so.
 
 ---
 
@@ -173,7 +173,7 @@ Ltijs can also be used with other databases through database plugins that use th
 ```javascript
 const path = require('path')
 
-// Require Provider 
+// Require Provider
 const lti = require('ltijs').Provider
 
 // Setup provider
@@ -239,7 +239,7 @@ setup()
 #### Provider.Database
 Database object. Allows you to perform the database operations using the same methods used by the internal code.
 
-**Type**: ```Database```  
+**Type**: ```Database```
 
 
 #### Provider.Grade
@@ -257,7 +257,7 @@ Database object. Allows you to perform the database operations using the same me
 
 **Type**: ```NamesAndRoles```
 
-#### Provider.setup(encryptionkey, database [, options]) 
+#### Provider.setup(encryptionkey, database [, options])
 
 Method used to setup and configure the LTI® provider.
 
@@ -303,7 +303,7 @@ Method used to setup and configure the LTI® provider.
 | options.dynReg.customParameters | `Object` | Custom parameters object. (Ex: `{ key: 'value' })` | *Optional* |
 | options.dynReg.autoActivate | `Boolean` | Platform auto activation flag. If true, every Platform registered dynamically is immediately activated. **Default: false**. | *Optional* |
 
-#### async Provider.deploy(options) 
+#### async Provider.deploy(options)
 
 Starts listening to a given port for LTI® requests and opens connection to the configured database.
 
@@ -324,7 +324,7 @@ Starts listening to a given port for LTI® requests and opens connection to the 
 
 
 
-#### async Provider.close() 
+#### async Provider.close()
 
 Closes connection to database and stops server.
 
@@ -342,7 +342,7 @@ Closes connection to database and stops server.
 
 
 
-#### Provider.onConnect(connectCallback) 
+#### Provider.onConnect(connectCallback)
 
 Sets the callback method called whenever theres a sucessfull connection, exposing a token object containing the decoded idToken and the usual Express route parameters (Request, Response and Next).
 
@@ -373,9 +373,14 @@ lti.app.get(lti.appRoute(), async (req, res, next) => { return res.send(res.loca
 ```
 
 
-#### Provider.onDeepLinking(deepLinkingCallback) 
+#### Provider.onDeepLinking(deepLinkingCallback)
 
 Sets the callback method called whenever theres a sucessfull deep linking request connection, exposing a token object containing the decoded idToken and the usual Express route parameters (Request, Response and Next). Through this callback you can display your Deep Linking view.
+
+
+#### Provider.onDeepLinking(submissionReviewCallback)
+
+Sets the callback method called whenever theres a sucessfull submission review request connection, exposing a token object containing the decoded idToken and the usual Express route parameters (Request, Response and Next). Through this callback you can display your Grading review view.
 
 
 
@@ -396,7 +401,7 @@ Sets the callback method called whenever theres a sucessfull deep linking reques
 lti.onDeepLinking(async (token, req, res, next) => { return res.send(token) })
 ```
 
-#### Provider.onSessionTimeout(sessionTimeoutCallback) 
+#### Provider.onSessionTimeout(sessionTimeoutCallback)
 
 Sets the callback method called when no valid session is found during a request validation.
 
@@ -422,7 +427,7 @@ lti.onSessionTimeout(async (req, res, next) => { return res.status(401).send(res
 *Ltijs provides a default method for this callback.*
 
 
-#### Provider.onInvalidToken(invalidTokenCallback) 
+#### Provider.onInvalidToken(invalidTokenCallback)
 
 Sets the callback method called when the token received fails the validation process.
 
@@ -448,7 +453,7 @@ lti.onInvalidToken(async (req, res, next) => { return res.status(401).send(res.l
 *Ltijs provides a default method for this callback.*
 
 
-#### Provider.onUnregisteredPlatform(unregisteredPlatformCallback) 
+#### Provider.onUnregisteredPlatform(unregisteredPlatformCallback)
 
 Sets the callback function called when the Platform attempting to login is not registered.
 
@@ -475,7 +480,7 @@ lti.onUnregisteredPlatform((req, res) => { return res.status(400).send({ status:
 
 
 
-#### Provider.onInactivePlatform(inactivePlatformCallback) 
+#### Provider.onInactivePlatform(inactivePlatformCallback)
 
 Sets the callback function called when the Platform attempting to login is not activated.
 
@@ -504,7 +509,7 @@ lti.onInactivePlatform((req, res) => { return res.status(401).send({ status: 401
 
 
 
-#### Provider.appRoute() 
+#### Provider.appRoute()
 
 Gets the main application Route that will receive the final decoded Idtoken.
 
@@ -520,7 +525,7 @@ lti.appRoute()
 
 
 
-#### Provider.loginRoute() 
+#### Provider.loginRoute()
 
 Gets the login Route responsible for dealing with the OIDC login flow.
 
@@ -535,7 +540,7 @@ lti.loginRoute()
 
 
 
-#### Provider.keysetRoute() 
+#### Provider.keysetRoute()
 
 Gets the public JWK keyset Route.
 
@@ -546,7 +551,7 @@ Gets the public JWK keyset Route.
 lti.keysetRoute()
 ```
 
-#### Provider.dynRegRoute() 
+#### Provider.dynRegRoute()
 
 Gets the dynamic registration Route.
 
@@ -579,7 +584,7 @@ lti.whitelist('/log', '/home', { route: '/route', method: 'POST' })
 
 
 
-#### async Provider.registerPlatform(platform) 
+#### async Provider.registerPlatform(platform)
 
 Registers a new [Platform](platform.md).
 
@@ -610,7 +615,7 @@ Registers a new [Platform](platform.md).
 ##### Example
 
 ```javascript
-await lti.registerPlatform({ 
+await lti.registerPlatform({
   url: 'https://platform.url',
   name: 'Platform Name',
   clientId: 'TOOLCLIENTID',
@@ -622,7 +627,7 @@ await lti.registerPlatform({
 
 
 
-#### async Provider.getPlatform(url, clientId) 
+#### async Provider.getPlatform(url, clientId)
 
 Retrieves a [Platform](platform.md).
 
@@ -651,7 +656,7 @@ Retrieves a [Platform](platform.md).
 const plat = await lti.getPlatform('https://platform.url', 'TOOLCLIENTID')
 ```
 
-#### async Provider.getPlatformById(platformId) 
+#### async Provider.getPlatformById(platformId)
 
 Retrieves a [Platform](platform.md).
 
@@ -682,7 +687,7 @@ const plat = await lti.getPlatformById('asdih1k12poihalkja52')
 
 
 
-#### async Provider.deletePlatform(url, clientId) 
+#### async Provider.deletePlatform(url, clientId)
 
 Deletes a [Platform](platform.md).
 
@@ -706,7 +711,7 @@ Deletes a [Platform](platform.md).
 await lti.deletePlatform('https://platform.url', 'TOOLCLIENTID')
 ```
 
-#### async Provider.deletePlatformById(paltformId) 
+#### async Provider.deletePlatformById(paltformId)
 
 Deletes a [Platform](platform.md).
 
@@ -730,7 +735,7 @@ await lti.deletePlatformById('60b1fce753c875193d71b')
 ```
 
 
-#### async Provider.getAllPlatforms() 
+#### async Provider.getAllPlatforms()
 
 Gets all [platforms](platform.md).
 
@@ -748,7 +753,7 @@ const platforms = await lti.getAllPlatforms()
 ```
 
 
-#### async Provider.redirect(response, path [, options]) 
+#### async Provider.redirect(response, path [, options])
 
 Redirects to a new location. Passes Ltik if present.
 
@@ -765,7 +770,7 @@ Redirects to a new location. Passes Ltik if present.
 | [options.newResource] | <code>Boolean</code> | If true, changes the path variable on the context token. | *Optional* |
 | [options.query] | <code>Object</code> | Query parameters that should be added to the redirection URL. | *Optional* |
 
-**Example**  
+**Example**
 ```js
 lti.redirect(res, '/path', { newResource: true, query: { param: 'value' } })
 // Redirects to /path?param=value
@@ -782,12 +787,12 @@ When using Ltijs, the first step must **always** be to call the `lti.setup()` me
 const lti = require('ltijs').Provider
 
 // Setup provider example
-lti.setup('EXAMPLEKEY', 
-          { 
+lti.setup('EXAMPLEKEY',
+          {
             url: 'mongodb://localhost/database',// Database url
             connection:{ user:'user', pass: 'pass'}// Database configuration
-          }, 
-          { 
+          },
+          {
             appRoute: '/app',// Scpecifying main app route
             loginRoute: '/login', // Specifying login route
             cookies: {
@@ -805,7 +810,7 @@ The **encryptionkey** parameter receives a string that will be used as a secret 
 
 ### Database configuration:
 
-The second parameter of the setup method, **database**, is an object with: 
+The second parameter of the setup method, **database**, is an object with:
 
 - An `url` field, that should be the **database connection url**;
 
@@ -821,7 +826,7 @@ The second parameter of the setup method, **database**, is an object with:
 The third parameter, **options**, is an optional parameter that handles the additional provider configuration:
 
 #### Reserved endpoint configuration:
-  
+
 Through the **options** parameter you can specify the routes for the reserved endpoints used by Ltijs:
 
 - **appRoute** - Route used to handle successful launch requests through the `onConnect` callback. **Default: '/'**.
@@ -834,12 +839,12 @@ Through the **options** parameter you can specify the routes for the reserved en
 
 ```javascript
 // Setup provider example
-lti.setup('EXAMPLEKEY', 
-          { 
+lti.setup('EXAMPLEKEY',
+          {
             url: 'mongodb://localhost/database',// Database url
             connection:{ user:'user', pass: 'pass'}// Database configuration
-          }, 
-          { 
+          },
+          {
             appRoute: '/app',// Scpecifying main app route
             loginRoute: '/loginroute', // Specifying login route
             keysetRoute: '/keyset', // Specifying keyset route
@@ -859,12 +864,12 @@ Ltijs sets session cookies throughout the LTI® validation process, how these co
 
 ```javascript
 // Setup provider example
-lti.setup('EXAMPLEKEY', 
-          { 
+lti.setup('EXAMPLEKEY',
+          {
             url: 'mongodb://localhost/database',// Database url
             connection:{ user:'user', pass: 'pass'}// Database configuration
-          }, 
-          { 
+          },
+          {
             cookies: { // Cookie configuration
               secure: true,
               sameSite: 'None',
@@ -877,18 +882,18 @@ lti.setup('EXAMPLEKEY',
 
 #### Development mode:
 
-Ltijs relies on cookies for part of the validation process, but in some development environments, cookies might not be able to be set, for instance if you are trying to set cross domain cookies over an insecure http connection. 
+Ltijs relies on cookies for part of the validation process, but in some development environments, cookies might not be able to be set, for instance if you are trying to set cross domain cookies over an insecure http connection.
 
 In situations like this you can set the `devMode` field as true and Ltijs will stop trying to validate the cookies and will instead use the information obtained through the `ltik` token to retrieve the correct context information.
 
 ```javascript
 // Setup provider example
-lti.setup('EXAMPLEKEY', 
-          { 
+lti.setup('EXAMPLEKEY',
+          {
             url: 'mongodb://localhost/database',// Database url
             connection:{ user:'user', pass: 'pass'}// Database configuration
-          }, 
-          { 
+          },
+          {
             devMode: true // Using development mode
           })
 ```
@@ -901,12 +906,12 @@ Ltijs can remove the session cookie request authentication step by using `ltiaas
 
 ```javascript
 // Setup provider example
-lti.setup('EXAMPLEKEY', 
-          { 
+lti.setup('EXAMPLEKEY',
+          {
             url: 'mongodb://localhost/database',// Database url
             connection:{ user:'user', pass: 'pass'}// Database configuration
-          }, 
-          { 
+          },
+          {
             ltiaas: true // Using ltiaas mode
           })
 ```
@@ -916,7 +921,7 @@ lti.setup('EXAMPLEKEY',
 
 #### Token max age allowed:
 
-As part of the LTI® 1.3 protocol validation steps, Ltijs checks the idtoken's `iat` claim and flags the token as invalid if it is older than **10 seconds**. 
+As part of the LTI® 1.3 protocol validation steps, Ltijs checks the idtoken's `iat` claim and flags the token as invalid if it is older than **10 seconds**.
 
 This limit can be configured (or removed) through the `tokenMaxAge` field:
 
@@ -924,12 +929,12 @@ This limit can be configured (or removed) through the `tokenMaxAge` field:
 
 ```javascript
 // Setup provider example
-lti.setup('EXAMPLEKEY', 
-          { 
+lti.setup('EXAMPLEKEY',
+          {
             url: 'mongodb://localhost/database',// Database url
             connection:{ user:'user', pass: 'pass'}// Database configuration
-          }, 
-          { 
+          },
+          {
             tokenMaxAge: 60 // Setting maximum token age as 60 seconds
           })
 ```
@@ -949,14 +954,14 @@ const middleware = (app) => {
 }
 
 //Configure provider
-lti.setup('EXAMPLEKEY', 
-            { url: 'mongodb://localhost/database', 
+lti.setup('EXAMPLEKEY',
+            { url: 'mongodb://localhost/database',
               connection:{ user:'user',
-                          pass: 'pass'} 
-            }, 
-            {  
+                          pass: 'pass'}
+            },
+            {
               serverAddon: middleware // Setting addon method
-            }) 
+            })
 ```
 
 ***Registered middlewares need to call `next()`, otherwise no other handler will be reached.***
@@ -966,16 +971,16 @@ lti.setup('EXAMPLEKEY',
 
 `Express` allows us to specify a path from where static files will be served.
 
-Ltijs can use this functionality by setting the staticPath parameter of the constructor's additional options. 
+Ltijs can use this functionality by setting the staticPath parameter of the constructor's additional options.
 
 ```javascript
 //Configure provider
-lti.setup('EXAMPLEKEY', 
-            { url: 'mongodb://localhost/database', 
+lti.setup('EXAMPLEKEY',
+            { url: 'mongodb://localhost/database',
               connection:{ user:'user',
-                          pass: 'pass'} 
-            }, 
-            { 
+                          pass: 'pass'}
+            },
+            {
               staticPath: path.join(__dirname, 'public') // Setting static path
             })
 ```
@@ -1005,14 +1010,14 @@ const middleware = (app) => {
 }
 
 //Configure provider
-lti.setup('EXAMPLEKEY', 
-            { url: 'mongodb://localhost/database', 
+lti.setup('EXAMPLEKEY',
+            { url: 'mongodb://localhost/database',
               connection:{ user:'user',
-                          pass: 'pass'} 
-            }, 
-            {  
+                          pass: 'pass'}
+            },
+            {
               serverAddon: middleware // Setting addon method
-            }) 
+            })
 ```
 And then accessing the files through the specified `/static` route:
 
@@ -1031,12 +1036,12 @@ Ltijs `Express` instance is configured to accept cross origin requests by defaul
 
 ```javascript
 //Configure provider
-lti.setup('EXAMPLEKEY', 
-            { url: 'mongodb://localhost/database', 
+lti.setup('EXAMPLEKEY',
+            { url: 'mongodb://localhost/database',
               connection:{ user:'user',
-                          pass: 'pass'} 
-            }, 
-            { 
+                          pass: 'pass'}
+            },
+            {
               cors: false // Disabling cors
             })
 ```
@@ -1045,15 +1050,15 @@ lti.setup('EXAMPLEKEY',
 
 ## Using Ltijs
 
-After the `lti.setup()` method is called, the `lti` object gives you access to various functionalities to help you create your LTI® Provider. 
+After the `lti.setup()` method is called, the `lti` object gives you access to various functionalities to help you create your LTI® Provider.
 
 The `lti` object is a singleton that can be accessed across multiple files while calling `lti.setup()` only once:
 
 You can setup Ltijs in file `a.js`:
 
 ```javascript
-// a.js 
-// Require Provider 
+// a.js
+// Require Provider
 const lti = require('ltijs').Provider
 // Require b.js
 const routes = require('./b')
@@ -1072,8 +1077,8 @@ lti.deploy()
 And access the same object in a second file `b.js`:
 
 ```javascript
-// b.js 
-// Require Provider 
+// b.js
+// Require Provider
 const lti = require('ltijs').Provider
 // Require express router
 const router = require('express').Router()
@@ -1137,7 +1142,7 @@ Ltijs allows you to configure it's main behaviours through callbacks:
 
 #### onConnect
 
-The `onConnect` callback is called whenever a successful launch request arrives at the main app url. This callback can be set through the `lti.onConnect()` method. 
+The `onConnect` callback is called whenever a successful launch request arrives at the main app url. This callback can be set through the `lti.onConnect()` method.
 
 The callback route will be given a first parameter `token`, that is the user's validated [idtoken](#idtoken), and the three Express route parameters (request, response and next).
 
@@ -1157,7 +1162,7 @@ lti.onConnect(async (token, req, res, next) => {
 // Equivalent to onConnect usage above
 lti.app.get(lti.appRoute(), async (req, res, next) => {
     console.log(res.locals.token)
-    return res.send('User connected!') 
+    return res.send('User connected!')
   }
 )
 ```
@@ -1168,14 +1173,14 @@ Launches directed at other endpoints are also valid but **are not handled by the
 // This route can handle launches to /endpoint
 lti.app.get('/endpoint', async (req, res, next) => {
     console.log(res.locals.token)
-    return res.send('User connected!') 
+    return res.send('User connected!')
   }
 )
 ```
 
 #### onDeepLinking
 
-The `onDeepLinking` callback is called whenever a successfull deep linking request arrives at the main app url. This callback can be set through the `lti.onDeepLinking()` method. 
+The `onDeepLinking` callback is called whenever a successfull deep linking request arrives at the main app url. This callback can be set through the `lti.onDeepLinking()` method.
 
 The callback route will be given a first parameter `token`, that is the user's validated [idtoken](#idtoken), and the three Express route parameters (request, response and next).
 
@@ -1200,7 +1205,7 @@ The callback route will be given the three Express route parameters (request, re
 > *This callback should be used to display your **invalid token error screen**.*
 
 ```javascript
-lti.onInvalidToken(async (req, res, next) => { 
+lti.onInvalidToken(async (req, res, next) => {
     return res.status(401).send(res.locals.err)
   }
 )
@@ -1222,8 +1227,8 @@ The callback route will be given the three Express route parameters (request, re
 > *This callback should be used to display your **session timeout error screen**.*
 
 ```javascript
-lti.onSessionTimeout(async (req, res, next) => { 
-    return res.status(401).send(res.locals.err) 
+lti.onSessionTimeout(async (req, res, next) => {
+    return res.status(401).send(res.locals.err)
   }
 )
 ```
@@ -1244,8 +1249,8 @@ The callback route will be given the two Express route parameters (request, resp
 > *This callback should be used to display your **Unregistered Platform error screen**.*
 
 ```javascript
-lti.onUnregisteredPlatform((req, res) => { 
-  return res.status(400).send({ status: 400, error: 'Bad Request', details: { message: 'Unregistered Platform!' } }) 
+lti.onUnregisteredPlatform((req, res) => {
+  return res.status(400).send({ status: 400, error: 'Bad Request', details: { message: 'Unregistered Platform!' } })
 })
 ```
 *Ltijs provides a default method for this callback that returns a 400 error code with the default error object:*
@@ -1262,8 +1267,8 @@ The callback route will be given the two Express route parameters (request, resp
 > *This callback should be used to display your **Inactive Platform error screen**.*
 
 ```javascript
-lti.onInactivePlatform((req, res) => { 
-  return res.status(401).send({ status: 401, error: 'Unauthorized', details: { message: 'Platform not active!' } }) 
+lti.onInactivePlatform((req, res) => {
+  return res.status(401).send({ status: 401, error: 'Unauthorized', details: { message: 'Platform not active!' } })
 })
 ```
 *Ltijs provides a default method for this callback that returns a 401 error code with the default error object:*
@@ -1332,7 +1337,7 @@ A LTI® tool works in conjunction with an LTI® ready platform, so in order for 
 The`lti.registerPlatform()` method returns a Promise that resolves the created [Platform](platform.md) object.
 
 ```javascript
-let plat = await lti.registerPlatform({ 
+let plat = await lti.registerPlatform({
     url: 'https://platform.url',
     clientId: 'TOOLCLIENTID',
     name: 'Platform Name',
@@ -1366,8 +1371,8 @@ authConfig: { method: 'JWK_SET', key: 'https://platform.url/keyset' }
 - If the platform uses a JWK key
 
 ```javascript
-authConfig: { method: 'JWK_KEY', 
-              key: 
+authConfig: { method: 'JWK_KEY',
+              key:
                 '{"kty":"EC",
                   "crv":"P-256",
                   "x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
@@ -1380,7 +1385,7 @@ authConfig: { method: 'JWK_KEY',
 - If the platform uses a RSA key
 
 ```javascript
-authConfig: { method: 'RSA_KEY', 
+authConfig: { method: 'RSA_KEY',
               key: '-----BEGIN PUBLIC KEY-----\n'+
                   'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0\n'+
                   'FPqri0cb2JZfXJ/DgYSF6vUpwmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/\n'+
@@ -1444,7 +1449,7 @@ If the platform is already registered and you pass different values for the para
 *platformUrl and cliendId have to be passed and cannot be changed.*
 
 ```javascript
-let plat = await lti.registerPlatform({ 
+let plat = await lti.registerPlatform({
     url: 'https://platform.url',
     clientId: 'TOOLCLIENTID',
     name: 'Platform Name 2', // Changing the name of already registered platform
@@ -1453,7 +1458,7 @@ let plat = await lti.registerPlatform({
 
 #### Deleting a Platform
 
-Registered platforms can be deleted using the `lti.deletePlatform()` and `lti.deletePlatformById()` methods. 
+Registered platforms can be deleted using the `lti.deletePlatform()` and `lti.deletePlatformById()` methods.
 
 The `lti.deletePlatform()` method receives two arguments, `platformUrl` and `clientId`:
 
@@ -1492,7 +1497,7 @@ onConnect(async (token, req, res) => {
 ```
 
 
-The `idtoken` object consists of: 
+The `idtoken` object consists of:
 
 ```javascript
 // Example idtoken for a Moodle platform
@@ -1533,7 +1538,7 @@ onConnect(async (token, req, res) => {
 ```
 
 
-The `contexttoken` object consists of: 
+The `contexttoken` object consists of:
 
 ```javascript
 // Example contexttoken for a Moodle platform
@@ -1612,8 +1617,8 @@ Ltijs need as way to retrieve the correct `idtoken` and `contexttoken` informati
 A platform can launch to **any of the tool's endpoints**, but only launches targeting the specified `appRoute` will be sent to the [onConnect callback](#onconnect). **Launches to other endpoints must be handled by their specific `Express` routes.**
 
 At the end of a successful launch, Ltijs redirects the request to the desired endpoint, but it also does two other things:
- 
-- Sets a **signed session cookie** containing the `platformCode` and `userId` information; 
+
+- Sets a **signed session cookie** containing the `platformCode` and `userId` information;
 
 - Sends a **ltik** JWT token containing the same platform and user information, with additional context information as a query parameter to the endpoint.
 
@@ -1692,9 +1697,9 @@ When using the `LTIK-AUTH-V1` authorization schema, `req.headers.authorization` 
 
 **Ltijs** will look for the `ltik` in the following order:
 
-- LTIK-AUTH-V1 Authorization 
-- query 
-- body 
+- LTIK-AUTH-V1 Authorization
+- query
+- body
 - Bearer Authorization
 
 ##### Cookies
@@ -1711,12 +1716,12 @@ If the validation fails, the request is handled by the **invalidTokenCallback** 
 
 ```javascript
 // Setup provider example
-lti.setup('EXAMPLEKEY', 
-          { 
+lti.setup('EXAMPLEKEY',
+          {
             url: 'mongodb://localhost/database',// Database url
             connection:{ user:'user', pass: 'pass'}// Database configuration
-          }, 
-          { 
+          },
+          {
             ltiaas: true // Using ltiaas mode
           })
 ```
@@ -1784,7 +1789,7 @@ The `new RegExp(/^\/route1/)` regex will whitelistd every route that starts with
 
 #### Redirecting with Ltijs
 
-The Ltijs authentication protocol relies on the `ltik` token being passed to endpoints as query parameters. 
+The Ltijs authentication protocol relies on the `ltik` token being passed to endpoints as query parameters.
 
 To make this process seamless, the `lti.redirect()` method can be used to redirect to an endpoint passing the `ltik` token automatically:
 
@@ -1812,12 +1817,12 @@ The `url` parameter can be an internal route ('/route') or a complete URL ('http
 
   ```javascript
   // Setup provider example
-  lti.setup('EXAMPLEKEY', 
-    { 
+  lti.setup('EXAMPLEKEY',
+    {
       url: 'mongodb://localhost/database',// Database url
       connection:{ user:'user', pass: 'pass'}// Database configuration
-    }, 
-    { 
+    },
+    {
       cookies: { // Cookie configuration
         secure: true,
         sameSite: 'None',
@@ -1830,7 +1835,7 @@ The `url` parameter can be an internal route ('/route') or a complete URL ('http
 
 - If the complete URL is on a different domain, it will have access to the `ltik`, but **it will not have access to a `session cookie`**, and will only be able to make successful requests to whitelisted routes.
 
-- If the route originating the resource does not have access to an `idtoken` (whitelisted route), `lti.redirect()` method will still perform the redirection, but the target will not have access to the `ltik` nor the `session cookie`. 
+- If the route originating the resource does not have access to an `idtoken` (whitelisted route), `lti.redirect()` method will still perform the redirection, but the target will not have access to the `ltik` nor the `session cookie`.
 
 
 The `lti.redirect()` method also has an `options` parameter that accepts two fields:
@@ -1894,7 +1899,7 @@ DEBUG='provider:*' npm start
 
 ## Contributing
 
-Please ⭐️ the repo, it always helps! 
+Please ⭐️ the repo, it always helps!
 
 If you find a bug or think that something is hard to understand feel free to open an issue or contact me on twitter [@cvmcosta](https://twitter.com/cvmcosta), pull requests are also welcome :)
 
