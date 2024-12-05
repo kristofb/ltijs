@@ -9,12 +9,14 @@
 
 ### CHANGELOG
 
+> 2024-12-05
+> - Added management of message type `LtiSubmissionReviewRequest` [https://www.imsglobal.org/spec/lti-sr/v1p0](https://www.imsglobal.org/spec/lti-sr/v1p0)
+
 #### V5.9.5
 > 2024-05-01
 > - A few improvements to dynamic registration.
 > - Fixed the regular LTI launch message type. This was not causing any issues, as the regular launch is always implied when performing dynamic registration.
 > - Added ability to modify dynamic registration options when creating a custom handler. Thank you @pfgray for the contribution!
-
 
 #### V5.9.4
 > 2024-04-10
@@ -133,7 +135,7 @@
 > 2020-09-21
 > - Changes to `platform.platformAuthConfig()` method, now accepts alterations to only one of the values.
 > - ScoreMaximum of grades is now only passed when scoreGiven is present.
-> - Created `resourceLinkId` option for names and roles service, representing the `rlid` option. 
+> - Created `resourceLinkId` option for names and roles service, representing the `rlid` option.
 
 #### V5.3.6
 > 2020-09-20
@@ -383,7 +385,7 @@
 > - Changed Provider.whitelist method to receive strings as rest parameter to make it easier.
 
 
-#### V1.1.0 
+#### V1.1.0
 
 > 2019-08-13
 > - Changed Request builder to include some optional LTI® launch parameters.
