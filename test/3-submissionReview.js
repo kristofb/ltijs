@@ -1,9 +1,8 @@
-// Tests for the Deep Linking class LTI methods
-// Cvmcosta 2020
+// Tests for the Submission Review class LTI methods
+// Kristof 2024
 
 const jwt = require('jsonwebtoken')
 const nock = require('nock')
-const { sign } = require('cookie-signature')
 
 const cheerio = require('cheerio');
 
@@ -80,7 +79,7 @@ const tokenValid = {
     deep_link_return_url: 'https://ltiadvantagevalidator.imsglobal.org/ltitool/deeplinkresponse.html'
   },
   'https://purl.imsglobal.org/spec/lti/claim/version': '1.3.0',
-  'https://purl.imsglobal.org/spec/lti/claim/message_type': 'LtiDeepLinkingRequest',
+  'https://purl.imsglobal.org/spec/lti/claim/message_type': 'LtiSubmissionReviewRequest',
   'https://purl.imsglobal.org/spec/lti/claim/custom': {
     resource: 'qualificacao_dos_processos_de_trabalho_na_ABS/EDUCSAITE/TRILHA_4/SAUDE_PESSOA_DEFICIENCIA_INFANCIA/EBOOK_2',
     system_setting_url: 'https://alfa.educsaite.org/mod/lti/services.php/tool/2/custom',
@@ -95,7 +94,15 @@ const tokenValid = {
   'https://purl.imsglobal.org/spec/lti-nrps/claim/namesroleservice': {
     context_memberships_url: 'https://alfa.educsaite.org/mod/lti/services.php/CourseSection/3/bindings/2/memberships',
     service_versions: [Array]
-  }
+  },
+  "https://purl.imsglobal.org/spec/lti/claim/for_user": {
+    "user_id": "1239a-ilt",
+    "person_sourcedid": "example.edu:71ee7e42-f6d2-414a-80db-b69ac2defd4",
+    "given_name": "Jude",
+    "family_name": "Wilbert",
+    "email": "jwilbert@example.org",
+    "roles": ["http://purl.imsglobal.org/vocab/lis/v2/membership#Learner"]
+  },
 }
 
 const signToken = (token, kid) => {
@@ -121,16 +128,15 @@ const signToken = (token, kid) => {
 
 const lti = require('../dist/Provider/Provider')
 
-describe('Testing Deep Linking Service', function () {
+describe('Testing Submission Review Service', function () {
   this.timeout(10000)
 
-  it('Deep Linking Launch expected to return status 200', async () => {
+  it('Submission Review Launch expected to return status 200', async () => {
     const token = JSON.parse(JSON.stringify(tokenValid))
     token.nonce = encodeURIComponent([...Array(25)].map(_ => (Math.random() * 36 | 0).toString(36)).join``)
 
     const payload = signToken(token, '123456')
     const state = encodeURIComponent([...Array(25)].map(_ => (Math.random() * 36 | 0).toString(36)).join``)
-    const signedState = sign(state, 'LTIKEY')
     const url = await lti.appRoute()
 
     nock('http://localhost/moodle').get('/keyset').reply(200, {
@@ -139,117 +145,41 @@ describe('Testing Deep Linking Service', function () {
       ]
     })
 
-    lti.onDeepLinking((token, req, res) => {
+    lti.onSubmissionReview((token, req, res) => {
       return res.sendStatus(200)
     })
 
-    return chai.request(lti.app).post(url).type('json').send({ id_token: payload, state, signed_state: signedState }).set('Cookie', ['ltiaHR0cDovL2xvY2FsaG9zdC9tb29kbGVDbGllbnRJZDEy=s%3A2.ZezwPKtv3Uibp4A%2F6cN0UzbIQlhA%2BTAKvbtN%2FvgGaCI; Path=/; HttpOnly; SameSite=None']).then(res => {
+    return chai.request(lti.app)
+               .post(url).type('json')
+               .send({ id_token: payload, state })
+               .set('Cookie', ['state' + state + '=s%3Ahttp%3A%2F%2Flocalhost%2Fmoodle.fsJogjTuxtbJwvJcuG4esveQAlih67sfEltuwRM6MX0; Path=/; HttpOnly;', 'ltiaHR0cDovL2xvY2FsaG9zdC9tb29kbGVDbGllbnRJZDEy=s%3A2.ZezwPKtv3Uibp4A%2F6cN0UzbIQlhA%2BTAKvbtN%2FvgGaCI; Path=/; HttpOnly; SameSite=None'])
+               .then(res => {
+      console.log('result:', res.text)
       expect(res).to.have.status(200)
     })
   })
-  it('DeepLinking.createDeepLinkingMessage expected to return valid deep linking jwt', async () => {
-    const token = JSON.parse(JSON.stringify(tokenValid))
-    token.nonce = encodeURIComponent([...Array(25)].map(_ => (Math.random() * 36 | 0).toString(36)).join``)
 
-    const payload = signToken(token, '123456')
-    const state = encodeURIComponent([...Array(25)].map(_ => (Math.random() * 36 | 0).toString(36)).join``)
-    const signedState = sign(state, 'LTIKEY')
-    const url = await lti.appRoute()
 
-    const plat = await lti.getPlatform(token.iss, token.aud)
+  describe('Testing Submission Review Service when no callback has been defined', function () {
+    this.timeout(10000)
 
-    nock('http://localhost/moodle').get('/keyset').reply(200, {
-      keys: [
-        { kty: 'RSA', e: 'AQAB', kid: '123456', n: 'VrJSr-xli8NfuAdk_Wem5BARmmW4BpJvXBx3MbFY_0grH9Cd7OxBwVYSwI4P4yhL27upa1_FCRwLi3raOPSJOkHEDvFwtyYZMvdYcpDYTv6JRVqbgEyZtHa-vjL1wBqqW75yPDRoyZdnA8MWrfyRUOak53ZVWHRKgBnP53oXm7M' }
-      ]
-    })
+    it('Submission Review Launch expected to return status 200, even with no callback defined and called', async () => {
+      const token = JSON.parse(JSON.stringify(tokenValid))
+      token.nonce = encodeURIComponent([...Array(25)].map(_ => (Math.random() * 36 | 0).toString(36)).join``)
 
-    const item = {
-      type: 'ltiResourceLink',
-      title: 'Resource',
-      custom: {
-        name: 'Param',
-        value: 'Value'
-      }
-    }
+      const payload = signToken(token, '123456')
+      const state = encodeURIComponent([...Array(25)].map(_ => (Math.random() * 36 | 0).toString(36)).join``)
+      const url = await lti.appRoute()
 
-    lti.onDeepLinking(async (token, req, res) => {
-      try {
-        return res.send(await lti.DeepLinking.createDeepLinkingMessage(token, item, { message: 'Successfully Registered' }))
-      } catch (err) {
-        res.sendStatus(500)
-      }
-    })
+      nock('http://localhost/moodle').get('/keyset').reply(200, {
+        keys: [
+          { kty: 'RSA', e: 'AQAB', kid: '123456', n: 'VrJSr-xli8NfuAdk_Wem5BARmmW4BpJvXBx3MbFY_0grH9Cd7OxBwVYSwI4P4yhL27upa1_FCRwLi3raOPSJOkHEDvFwtyYZMvdYcpDYTv6JRVqbgEyZtHa-vjL1wBqqW75yPDRoyZdnA8MWrfyRUOak53ZVWHRKgBnP53oXm7M' }
+        ]
+      })
 
-    return chai.request(lti.app).post(url).type('json').send({ id_token: payload, state, signed_state: signedState }).set('Cookie', ['ltiaHR0cDovL2xvY2FsaG9zdC9tb29kbGVDbGllbnRJZDEy=s%3A2.ZezwPKtv3Uibp4A%2F6cN0UzbIQlhA%2BTAKvbtN%2FvgGaCI; Path=/; HttpOnly; SameSite=None']).then(async res => {
-      expect(res).to.have.status(200)
-      const payload = jwt.verify(res.text, await plat.platformPublicKey())
-      expect(payload['https://purl.imsglobal.org/spec/lti-dl/claim/content_items']).to.deep.include(item)
-      expect(payload.iss).to.equal(await plat.platformClientId())
-      expect(payload.aud).to.equal(await plat.platformUrl())
-    })
-  })
-  it('DeepLinking.createDeepLinkingForm expected to return valid deep linking form', async () => {
-    const token = JSON.parse(JSON.stringify(tokenValid))
-    token.nonce = encodeURIComponent([...Array(25)].map(_ => (Math.random() * 36 | 0).toString(36)).join``)
-
-    const payload = signToken(token, '123456')
-    const state = encodeURIComponent([...Array(25)].map(_ => (Math.random() * 36 | 0).toString(36)).join``)
-    const signedState = sign(state, 'LTIKEY')
-    const url = await lti.appRoute()
-
-    const plat = await lti.getPlatform(token.iss, token.aud)
-
-    nock('http://localhost/moodle').get('/keyset').reply(200, {
-      keys: [
-        { kty: 'RSA', e: 'AQAB', kid: '123456', n: 'VrJSr-xli8NfuAdk_Wem5BARmmW4BpJvXBx3MbFY_0grH9Cd7OxBwVYSwI4P4yhL27upa1_FCRwLi3raOPSJOkHEDvFwtyYZMvdYcpDYTv6JRVqbgEyZtHa-vjL1wBqqW75yPDRoyZdnA8MWrfyRUOak53ZVWHRKgBnP53oXm7M' }
-      ]
-    })
-
-    const item = {
-      type: 'ltiResourceLink',
-      title: 'Resource',
-      custom: {
-        name: 'Param',
-        value: 'Value'
-      }
-    }
-
-    lti.onDeepLinking(async (token, req, res) => {
-      try {
-        return res.send(await lti.DeepLinking.createDeepLinkingForm(token, item, { message: 'Successfully Registered' }))
-      } catch (err) {
-        res.sendStatus(500)
-      }
-    })
-
-    return chai.request(lti.app).post(url).type('json').send({ id_token: payload, state, signed_state: signedState }).set('Cookie', ['ltiaHR0cDovL2xvY2FsaG9zdC9tb29kbGVDbGllbnRJZDEy=s%3A2.ZezwPKtv3Uibp4A%2F6cN0UzbIQlhA%2BTAKvbtN%2FvgGaCI; Path=/; HttpOnly; SameSite=None']).then(async res => {
-      expect(res).to.have.status(200)
-
-      const $ = cheerio.load(res.text)
-      
-      // Verify the form tag and its attributes
-      const form = $('#ltijs_submit')
-      expect(form).to.have.lengthOf(1)
-      expect(form.attr('style')).to.equal('display: none;')
-      expect(form.attr('action')).to.equal('https://ltiadvantagevalidator.imsglobal.org/ltitool/deeplinkresponse.html')
-      expect(form.attr('method')).to.equal('POST')
-
-      // Verify the input tag and its attributes
-      const input = form.find('input[name="JWT"]')
-      expect(input).to.have.lengthOf(1)
-      const _payload = input.attr('value')
-
-      // Verify the script tag
-      const script = $('script')
-      expect(script).to.have.lengthOf(1)
-      expect(script.html().trim()).to.equal('document.getElementById("ltijs_submit").submit()')
-
-      // Verify the payload
-      const payload = jwt.verify(_payload, await plat.platformPublicKey())
-      expect(payload['https://purl.imsglobal.org/spec/lti-dl/claim/content_items']).to.deep.include(item)
-      expect(payload.iss).to.equal(await plat.platformClientId())
-      expect(payload.aud).to.equal(await plat.platformUrl())
+      return chai.request(lti.app).post(url).type('json').send({ id_token: payload, state }).set('Cookie', ['state' + state + '=s%3Ahttp%3A%2F%2Flocalhost%2Fmoodle.fsJogjTuxtbJwvJcuG4esveQAlih67sfEltuwRM6MX0; Path=/; HttpOnly;', 'ltiaHR0cDovL2xvY2FsaG9zdC9tb29kbGVDbGllbnRJZDEy=s%3A2.ZezwPKtv3Uibp4A%2F6cN0UzbIQlhA%2BTAKvbtN%2FvgGaCI; Path=/; HttpOnly; SameSite=None']).then(res => {
+        expect(res).to.have.status(200)
+      })
     })
   })
 })

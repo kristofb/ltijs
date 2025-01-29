@@ -69,27 +69,18 @@ class Auth {
   /**
      * @description Resolves a promisse if the token is valid following LTI 1.3 standards.
      * @param {String} token - JWT token to be verified.
-     * @param {Boolean} devMode - DevMode option.
      * @param {Object} validationParameters - Stored validation parameters retrieved from database.
      * @param {Function} getPlatform - getPlatform function to get the platform that originated the token.
      * @param {String} ENCRYPTIONKEY - Encription key.
      * @returns {Promise}
      */
-  static async validateToken(token, devMode, validationParameters, getPlatform, ENCRYPTIONKEY, Database) {
+  static async validateToken(token, validationParameters, getPlatform, ENCRYPTIONKEY, Database) {
     const decoded = jwt.decode(token, {
       complete: true
     });
     if (!decoded) throw new Error('INVALID_JWT_RECEIVED');
     const kid = decoded.header.kid;
     validationParameters.alg = decoded.header.alg;
-    provAuthDebug('Attempting to validate iss claim');
-    provAuthDebug('Request Iss claim: ' + validationParameters.iss);
-    provAuthDebug('Response Iss claim: ' + decoded.payload.iss);
-    if (!validationParameters.iss) {
-      if (!devMode) throw new Error('MISSING_VALIDATION_COOKIE');else {
-        provAuthDebug('Dev Mode enabled: Missing state validation cookies will be ignored');
-      }
-    } else if (validationParameters.iss !== decoded.payload.iss) throw new Error('ISS_CLAIM_DOES_NOT_MATCH');
     provAuthDebug('Attempting to retrieve registered platform');
     let platform;
     if (!Array.isArray(decoded.payload.aud)) platform = await getPlatform(decoded.payload.iss, decoded.payload.aud, ENCRYPTIONKEY, Database);else {
@@ -259,12 +250,22 @@ class Auth {
   static async claimValidation(token) {
     provAuthDebug('Initiating LTI 1.3 core claims validation');
     provAuthDebug('Checking Message type claim');
-    if (token['https://purl.imsglobal.org/spec/lti/claim/message_type'] !== 'LtiResourceLinkRequest' && token['https://purl.imsglobal.org/spec/lti/claim/message_type'] !== 'LtiDeepLinkingRequest') throw new Error('NO_MESSAGE_TYPE_CLAIM');
+    if (token['https://purl.imsglobal.org/spec/lti/claim/message_type'] !== 'LtiResourceLinkRequest' && token['https://purl.imsglobal.org/spec/lti/claim/message_type'] !== 'LtiDeepLinkingRequest' && token['https://purl.imsglobal.org/spec/lti/claim/message_type'] !== 'LtiSubmissionReviewRequest') {
+      throw new Error('NO_MESSAGE_TYPE_CLAIM');
+    }
     if (token['https://purl.imsglobal.org/spec/lti/claim/message_type'] === 'LtiResourceLinkRequest') {
       provAuthDebug('Checking Target Link Uri claim');
       if (!token['https://purl.imsglobal.org/spec/lti/claim/target_link_uri']) throw new Error('NO_TARGET_LINK_URI_CLAIM');
       provAuthDebug('Checking Resource Link Id claim');
       if (!token['https://purl.imsglobal.org/spec/lti/claim/resource_link'] || !token['https://purl.imsglobal.org/spec/lti/claim/resource_link'].id) throw new Error('NO_RESOURCE_LINK_ID_CLAIM');
+    }
+    if (token['https://purl.imsglobal.org/spec/lti/claim/message_type'] === 'LtiSubmissionReviewRequest') {
+      provAuthDebug('Checking For User claim');
+      if (!token['https://purl.imsglobal.org/spec/lti/claim/for_user'] || !token['https://purl.imsglobal.org/spec/lti/claim/for_user'].user_id) throw new Error('NO_FOR_USER_CLAIM');
+      provAuthDebug('Checking Target Link Uri claim');
+      if (!token['https://purl.imsglobal.org/spec/lti/claim/target_link_uri']) throw new Error('NO_TARGET_LINK_URI_CLAIM');
+      provAuthDebug('Checking endpoint claim');
+      if (!token['https://purl.imsglobal.org/spec/lti-ags/claim/endpoint']) throw new Error('NO_ENDPOINT_CLAIM');
     }
     provAuthDebug('Checking LTI Version claim');
     if (!token['https://purl.imsglobal.org/spec/lti/claim/version']) throw new Error('NO_LTI_VERSION_CLAIM');
