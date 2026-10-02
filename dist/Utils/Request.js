@@ -15,7 +15,6 @@ class Request {
       id_token_signed_response_alg: 'RS256',
       scope: 'openid',
       client_id: request.client_id || (await platform.platformClientId()),
-      redirect_uri: request.target_link_uri,
       login_hint: request.login_hint,
       nonce: encodeURIComponent([...Array(25)].map(_ => (Math.random() * 36 | 0).toString(36)).join``),
       prompt: 'none',
@@ -23,6 +22,9 @@ class Request {
     };
     if (request.lti_message_hint) query.lti_message_hint = request.lti_message_hint;
     if (request.lti_deployment_id) query.lti_deployment_id = request.lti_deployment_id;
+
+    // Moves redirect_uri to the end of the query string to avoid decoding issues
+    query.redirect_uri = request.target_link_uri;
     return query;
   }
 }
